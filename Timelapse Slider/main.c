@@ -23,19 +23,17 @@ uint8_t read_gray_code_from_encoder(void)
 int main(void)
 {
 	Initialize_LCD();
-
-	Send_A_String("Hello World!");
-	Goto_LCD_Location(5, 2);
-	Send_A_String("Second row!");
-	int num = 0;
-	char positionString[3];
+	Send_A_String("Hello Susani!");
+	_delay_ms(2000);
+	Goto_LCD_Location(1,1);
+	Send_A_String("Tralallalalala!");
+	
+	uint8_t val = 0, val_tmp = 0;
+	
 	while(1)
 	{
 		Goto_LCD_Location(1,2);
-		itoa(num, positionString, 10);
-		Send_A_String(positionString);
-		_delay_ms(100);
-		num++;
+		Send_A_String("I love you!");
 	}
 	
 	void RunTimeLapseProgram()
@@ -50,7 +48,7 @@ int main(void)
 	// Reset motor
 	void InitializeMotor()
 	{
-		//Make it go to left limit switch
+		//Make motor go to left limit switch
 		//While loop that moves motor until left limit is reached
 		//Set flag for motor ready
 	}
