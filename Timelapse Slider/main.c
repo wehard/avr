@@ -1,5 +1,3 @@
-#define F_CPU 1000000 // 1Mhz
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -20,20 +18,30 @@ uint8_t read_gray_code_from_encoder(void)
 	return val;
 }
 
+void LCD_Splash(void)
+{
+	Send_A_String("Hello!");
+	_delay_ms(1000);
+	Send_A_Command(0x01); // Clear screen
+}
+
 int main(void)
 {
 	Initialize_LCD();
-	Send_A_String("Hello Susani!");
-	_delay_ms(2000);
-	Goto_LCD_Location(1,1);
-	Send_A_String("Tralallalalala!");
+	LCD_Splash();
 	
 	uint8_t val = 0, val_tmp = 0;
 	
+	char counterString[4];
+	int count = 0;
 	while(1)
 	{
-		Goto_LCD_Location(1,2);
-		Send_A_String("I love you!");
+		itoa(count, counterString, 10);
+		Goto_LCD_Location(1, 2);
+		Send_A_String("Count = ");
+		Send_A_String(counterString);
+		count++;
+		_delay_ms(1000);
 	}
 	
 	void RunTimeLapseProgram()

@@ -1,5 +1,5 @@
 DEVICE     = atmega32
-CLOCK      = 8000000
+CLOCK      = 1000000
 PROGRAMMER = usbasp
 PORT	   = usb
 FILENAME   = main
