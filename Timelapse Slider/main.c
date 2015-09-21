@@ -1,7 +1,24 @@
+#define F_CPU 1000000 // 1Mhz
+
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include <stdlib.h>
 #include "MrLCD.h"
+
+uint8_t read_gray_code_from_encoder(void)
+{
+	uint8_t val = 0;
+	if(!bit_is_clear(PIND, PD2))
+	{
+		val |= (1<<1);
+	}
+	if(!bit_is_clear(PIND, PD3))
+	{
+		val |= (1<<0);
+	}
+	return val;
+}
 
 int main(void)
 {
@@ -14,7 +31,7 @@ int main(void)
 	char positionString[3];
 	while(1)
 	{
-		Goto_LCD_Locations(1,2);
+		Goto_LCD_Location(1,2);
 		itoa(num, positionString, 10);
 		Send_A_String(positionString);
 		_delay_ms(100);
