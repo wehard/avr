@@ -32,9 +32,11 @@ void initialize_rotary_encoder(void)
 
 void LCD_Splash(void)
 {
+	
 	Send_A_String("Hello!");
 	_delay_ms(1000);
 	Send_A_Command(0x01); // Clear screen
+	Send_A_Command(0x0C); // Hide cursor
 }
 
 int main(void)
@@ -42,49 +44,50 @@ int main(void)
 	Initialize_LCD();
 	LCD_Splash();
 	
-	uint8_t val = 0, val_tmp = 0;
+	uint8_t val = 0, val_tmp = 0, enc_dir = 0;
 	
 	initialize_rotary_encoder();
 	
 	char counterString[4];
 	int count = 64;
+	
+	itoa(count, counterString, 10);
+	Goto_LCD_Location(1,1);
+	Send_A_String(counterString);
+	
 	while(1)
 	{
 		val_tmp = read_gray_code_from_encoder();
 		
 		if(val != val_tmp)
 		{
-			if((val==3 && val_tmp == 1) || (val==0 && val_tmp==2))
+			if((val==3 && val_tmp == 1)) // || (val==0 && val_tmp==2))
 			{
-				count--;
+				enc_dir = 1;
+				if(count > 0) count--;
 				Goto_LCD_Location(1,2);
 				Send_A_String("L");
+				
 			}
-			else if((val==2 && val_tmp==0) || (val==1 && val_tmp==3))
+			else if((val==2 && val_tmp==0)) // || (val==1 && val_tmp==3))
 			{
-				count++;
+				enc_dir = 2;
+				if(count < 127) count++;
 				Goto_LCD_Location(1,2);
 				Send_A_String("R");
+				
 			}
 			val = val_tmp;
 			
 			itoa(count, counterString, 10);
 			Goto_LCD_Location(1,1);
+			Send_A_String("           ");
+			Goto_LCD_Location(1,1);
 			Send_A_String(counterString);
+			
 		}
 		
-		_delay_ms(1);
-		
-		
-		
-		/*
-		itoa(count, counterString, 10);
-		Goto_LCD_Location(1, 2);
-		Send_A_String("Count = ");
-		Send_A_String(counterString);
-		count++;
-		_delay_ms(1000);
-		*/
+		//_delay_ms(1);
 	}
 	return 0;
 }
@@ -95,7 +98,7 @@ void RunTimeLapseProgram()
 		//Send required amount of pulses to motor controller
 		//Calculate delay (the time the motor movement takes)
 		//Delay for amount of time needed between shots so that the motor has stopped when picture is taken
-		//Send pulse to camera
+		//Send pulse to camera IR
 	}
 	
 	// Reset motor
