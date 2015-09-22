@@ -16,7 +16,7 @@ uint8_t read_gray_code_from_encoder(void)
 	{
 		val |= (1<<1);
 	}
-	if(!bit_is_clear(ENC_PIN, ENC_PIN1))
+	if(!bit_is_clear(ENC_PIN, ENC_PIN2))
 	{
 		val |= (1<<0);
 	}
@@ -47,7 +47,7 @@ int main(void)
 	initialize_rotary_encoder();
 	
 	char counterString[4];
-	int count = 0;
+	int count = 64;
 	while(1)
 	{
 		val_tmp = read_gray_code_from_encoder();
@@ -56,17 +56,21 @@ int main(void)
 		{
 			if((val==3 && val_tmp == 1) || (val==0 && val_tmp==2))
 			{
-				count++;
+				count--;
+				Goto_LCD_Location(1,2);
+				Send_A_String("L");
 			}
 			else if((val==2 && val_tmp==0) || (val==1 && val_tmp==3))
 			{
-				count--;
+				count++;
+				Goto_LCD_Location(1,2);
+				Send_A_String("R");
 			}
 			val = val_tmp;
+			
 			itoa(count, counterString, 10);
-		
-		Goto_LCD_Location(1,1);
-		Send_A_String(counterString);
+			Goto_LCD_Location(1,1);
+			Send_A_String(counterString);
 		}
 		
 		_delay_ms(1);
