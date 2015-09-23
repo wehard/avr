@@ -20,6 +20,9 @@ void Peek_A_Boo(void);
 void Send_A_Command(unsigned char command);
 void Send_A_Character(unsigned char character);
 void Send_A_String(char *StringOfCharacters);
+void Send_A_String_XY(uint8_t x, uint8_t y, char *StringOfCharacters);
+void Send_An_Integer(int IntegerToDisplay, char NumberOfDigits);
+void Send_An_Integer_XY(uint8_t x, uint8_t y, int IntegerToDisplay, char NumberOfDigits);
 void Goto_LCD_Location(uint8_t x, uint8_t y);
 void Initialize_LCD(void);
 
@@ -69,6 +72,19 @@ void Send_A_String(char *StringOfCharacters)
 	{
 		Send_A_Character(*StringOfCharacters++);
 	}
+}
+
+void Send_A_String_XY(uint8_t x, uint8_t y, char *StringOfCharacters)
+{
+	Goto_LCD_Location(x, y);
+	Send_A_String(StringOfCharacters);
+}
+
+void Send_An_Integer_XY(uint8_t x, uint8_t y, int IntegerToDisplay, char NumberOfDigits)
+{
+	char StringToDisplay[NumberOfDigits];
+	itoa(IntegerToDisplay, StringToDisplay, 10);
+	Send_A_String_XY(x, y, StringToDisplay); // Send_A_String(" ");
 }
 
 void Goto_LCD_Location(uint8_t x, uint8_t y)

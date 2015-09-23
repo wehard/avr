@@ -10,7 +10,9 @@
 #define ENC_PIN2 	PA1
 #define ENC_BTN		PA2
 
-#define INTERVAL_VAL_ADDR	46
+#define TLAPSE_INT_ADDR	46
+#define MTR_SPD_ADDR		54
+#define TLAPSE_DUR_ADDR		62
 
 uint8_t read_gray_code_from_encoder(void)
 {
@@ -50,18 +52,20 @@ int main(void)
 	uint8_t val = 0, val_tmp = 0, enc_dir = 0;
 	
 	// Read saved value from eeprom
-	uint8_t count;
-	count = eeprom_read_byte((uint8_t*)INTERVAL_VAL_ADDR);
+	uint8_t tlapse_interval, motor_speed, tlapse_duration;
+	tlapse_interval = eeprom_read_byte((uint8_t*)TLAPSE_INT_ADDR);
+	motor_speed = eeprom_read_byte((uint8_t*)MTR_SPD_ADDR);
+	tlapse_duration = eeprom_read_byte((uint8_t*)TLAPSE_DUR_ADDR);
 	
 	initialize_rotary_encoder();
 	
-	char counterString[4];
+	char tlapse_intervalerString[4];
 
 	
 	Send_A_Command(0x0C); // Hide cursor
-	itoa(count, counterString, 10);
+	itoa(tlapse_interval, tlapse_intervalerString, 10);
 	Goto_LCD_Location(1,1);
-	Send_A_String(counterString);
+	Send_A_String(tlapse_intervalerString);
 	
 	while(1)
 	{
@@ -72,30 +76,34 @@ int main(void)
 			if((val==3 && val_tmp == 1)) // || (val==0 && val_tmp==2))
 			{
 				enc_dir = 1;
-				if(count > 1) count--;
-				Goto_LCD_Location(1,2);
-				Send_A_String("L");
+				if(tlapse_interval > 1) tlapse_interval--;
+				//Goto_LCD_Location(1,2);
+				Send_A_String_XY(16,1, "L");
 				
 			}
 			else if((val==2 && val_tmp==0)) // || (val==1 && val_tmp==3))
 			{
 				enc_dir = 2;
-				if(count < 255) count++;
-				Goto_LCD_Location(1,2);
-				Send_A_String("R");
+				if(tlapse_interval < 255) tlapse_interval++;
+				//Goto_LCD_Location(1,2);
+				Send_A_String_XY(16,1, "R");
 				
 			}
 			val = val_tmp;
 			
-			itoa(count, counterString, 10);
-			Goto_LCD_Location(1,1);
+			itoa(tlapse_interval, tlapse_intervalerString, 10);
+			Goto_LCD_Location(1,2);
 			Send_A_String("           ");
-			Goto_LCD_Location(1,1);
-			Send_A_String(counterString);
+			//Goto_LCD_Location(1,1);
+			//Send_A_String_XY(1,1, tlapse_intervalerString);
+			Send_An_Integer_XY(1,2, tlapse_interval, 3);
 			Send_A_String("s");
+			Send_An_Integer_XY(7,2, tlapse_duration, 3);
+			Send_An_Integer_XY(13,2, motor_speed, 3);
+			
 			
 			// Save current value to eeprom
-			eeprom_update_byte (( uint8_t *) INTERVAL_VAL_ADDR, count);
+			eeprom_update_byte (( uint8_t *) TLAPSE_INT_ADDR, tlapse_interval);
 			
 		}
 		
