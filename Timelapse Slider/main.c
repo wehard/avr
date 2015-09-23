@@ -3,14 +3,14 @@
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <stdlib.h>
-#include "MrLCD.h"
+#include "LCD.h"
 
 #define ENC_PIN		PINA
 #define ENC_PIN1 	PA0
 #define ENC_PIN2 	PA1
 #define ENC_BTN		PA2
 
-#define TLAPSE_INT_ADDR	46
+#define TLAPSE_INT_ADDR		46
 #define MTR_SPD_ADDR		54
 #define TLAPSE_DUR_ADDR		62
 
@@ -49,7 +49,7 @@ int main(void)
 	Initialize_LCD();
 	LCD_Splash();
 	
-	uint8_t val = 0, val_tmp = 0, enc_dir = 0;
+	uint8_t val = 0, val_tmp = 0;
 	
 	// Read saved value from eeprom
 	uint8_t tlapse_interval, motor_speed, tlapse_duration;
@@ -75,17 +75,13 @@ int main(void)
 		{
 			if((val==3 && val_tmp == 1)) // || (val==0 && val_tmp==2))
 			{
-				enc_dir = 1;
 				if(tlapse_interval > 1) tlapse_interval--;
-				//Goto_LCD_Location(1,2);
 				Send_A_String_XY(16,1, "L");
 				
 			}
 			else if((val==2 && val_tmp==0)) // || (val==1 && val_tmp==3))
 			{
-				enc_dir = 2;
 				if(tlapse_interval < 255) tlapse_interval++;
-				//Goto_LCD_Location(1,2);
 				Send_A_String_XY(16,1, "R");
 				
 			}

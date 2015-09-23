@@ -1,0 +1,25 @@
+SELFPRGEN = [ ]
+DWEN = [ ]
+EESAVE = [ ]
+SPIEN = [X]
+WDTON = [ ]
+BODLEVEL = 2V7
+RSTDISBL = [ ]
+CKDIV8 = [ ]
+CKOUT = [ ]
+SUT_CKSEL = EXTXOSC_8MHZ_XX_14CK_4MS1
+
+EXTENDED = 0xFF (valid)
+HIGH = 0xDB (valid)
+LOW = 0xEF (valid)
+
+
+
+
+//encoder port & pins ATTINY2313
+#define PORT_Enc 	PORTB 	
+#define PIN_Enc 	PINB
+#define DDR_Enc 	DDRB
+#define Pin1_Enc 	4  //PB4 PIN16
+#define Pin2_Enc 	3  //PB3 PIN15
+#define Btn_Enc 	1  //PB1 PIN13

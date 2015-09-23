@@ -1,5 +1,5 @@
-#ifndef MrLCD
-#define MrLCD
+#ifndef LCD
+#define LCD
 
 #include <avr/io.h>
 #include <util/delay.h>
