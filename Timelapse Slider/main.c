@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/eeprom.h>
 #include <stdlib.h>
 #include "MrLCD.h"
 
@@ -8,6 +9,8 @@
 #define ENC_PIN1 	PA0
 #define ENC_PIN2 	PA1
 #define ENC_BTN		PA2
+
+#define INTERVAL_VAL_ADDR	46
 
 uint8_t read_gray_code_from_encoder(void)
 {
@@ -36,7 +39,7 @@ void LCD_Splash(void)
 	Send_A_String("Hello!");
 	_delay_ms(1000);
 	Send_A_Command(0x01); // Clear screen
-	Send_A_Command(0x0C); // Hide cursor
+	
 }
 
 int main(void)
@@ -46,11 +49,16 @@ int main(void)
 	
 	uint8_t val = 0, val_tmp = 0, enc_dir = 0;
 	
+	// Read saved value from eeprom
+	uint8_t count;
+	count = eeprom_read_byte((uint8_t*)INTERVAL_VAL_ADDR);
+	
 	initialize_rotary_encoder();
 	
 	char counterString[4];
-	int count = 64;
+
 	
+	Send_A_Command(0x0C); // Hide cursor
 	itoa(count, counterString, 10);
 	Goto_LCD_Location(1,1);
 	Send_A_String(counterString);
@@ -64,7 +72,7 @@ int main(void)
 			if((val==3 && val_tmp == 1)) // || (val==0 && val_tmp==2))
 			{
 				enc_dir = 1;
-				if(count > 0) count--;
+				if(count > 1) count--;
 				Goto_LCD_Location(1,2);
 				Send_A_String("L");
 				
@@ -72,7 +80,7 @@ int main(void)
 			else if((val==2 && val_tmp==0)) // || (val==1 && val_tmp==3))
 			{
 				enc_dir = 2;
-				if(count < 127) count++;
+				if(count < 255) count++;
 				Goto_LCD_Location(1,2);
 				Send_A_String("R");
 				
@@ -84,6 +92,10 @@ int main(void)
 			Send_A_String("           ");
 			Goto_LCD_Location(1,1);
 			Send_A_String(counterString);
+			Send_A_String("s");
+			
+			// Save current value to eeprom
+			eeprom_update_byte (( uint8_t *) INTERVAL_VAL_ADDR, count);
 			
 		}
 		
